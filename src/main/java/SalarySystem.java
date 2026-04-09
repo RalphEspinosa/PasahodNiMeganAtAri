@@ -44,6 +44,7 @@ public class SalarySystem {
         System.out.println("|  5. Exit                       |");
         System.out.println("==================================");
         System.out.print("  Enter choice: ");
+        System.out.println("Ang ganda ko");
     }
     static void addEmployee() {
         if (count >= MAX_EMPLOYEES) {
