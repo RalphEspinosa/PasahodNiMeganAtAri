@@ -2,7 +2,7 @@ import java.util.Scanner;
 import java.io.*;
 import java.nio.file.*;
 
-public class SalarySystem {
+public class Prototype {
     static final int    MAX_EMPLOYEES   = 100;
     static final double OVERTIME_RATE   = 1.5;
     static final double REGULAR_HOURS   = 8.0;
@@ -43,11 +43,9 @@ public class SalarySystem {
 
     static void saveData() {
         try (PrintWriter pw = new PrintWriter(new FileWriter(DATA_FILE))) {
-        
             pw.println("name,hourlyRate,hoursWorked,basicPay,overtimePay,netPay");
 
             for (int i = 0; i < count; i++) {
-         
                 String safeName = "\"" + names[i].replace("\"", "\"\"") + "\"";
                 pw.printf("%s,%.2f,%.2f,%.2f,%.2f,%.2f%n",
                     safeName,
@@ -72,7 +70,7 @@ public class SalarySystem {
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line = br.readLine(); // skip header
+            String line = br.readLine();
             int loaded = 0;
 
             while ((line = br.readLine()) != null && count < MAX_EMPLOYEES) {
@@ -98,7 +96,6 @@ public class SalarySystem {
         }
     }
 
-
     static String[] parseCSVLine(String line) {
         java.util.List<String> fields = new java.util.ArrayList<>();
         StringBuilder sb = new StringBuilder();
@@ -108,10 +105,9 @@ public class SalarySystem {
             char c = line.charAt(i);
 
             if (c == '"') {
-                // Handle escaped quotes ("")
                 if (inQuotes && i + 1 < line.length() && line.charAt(i + 1) == '"') {
                     sb.append('"');
-                    i++; // skip next quote
+                    i++;
                 } else {
                     inQuotes = !inQuotes;
                 }
@@ -122,7 +118,7 @@ public class SalarySystem {
                 sb.append(c);
             }
         }
-        fields.add(sb.toString()); // last field
+        fields.add(sb.toString());
         return fields.toArray(new String[0]);
     }
 
@@ -184,17 +180,17 @@ public class SalarySystem {
             return;
         }
 
-        System.out.printf("  %-4s %-18s %8s %8s %12s %12s %12s%n",
-            "No.", "Name", "Rate", "Hours", "Basic Pay", "OT Pay", "Net Pay");
-        printDivider(82);
-
         for (int i = 0; i < count; i++) {
-            System.out.printf("  %-4d %-18s %8.2f %8.2f %12.2f %12.2f %12.2f%n",
-                (i + 1), names[i], hourlyRates[i], hoursWorked[i],
-                basicPay[i], overtimePay[i], netPay[i]);
+            System.out.println("  No.        : " + (i + 1));
+            System.out.println("  Name       : " + names[i]);
+            System.out.println("  Rate       : " + hourlyRates[i]);
+            System.out.println("  Hours      : " + hoursWorked[i]);
+            System.out.println("  Basic Pay  : " + basicPay[i]);
+            System.out.println("  OT Pay     : " + overtimePay[i]);
+            System.out.println("  Net Pay    : " + netPay[i]);
+            System.out.println();
         }
 
-        printDivider(82);
         System.out.printf("  Total employees: %d%n", count);
     }
 
@@ -238,17 +234,19 @@ public class SalarySystem {
         printHeader("SEARCH EMPLOYEE");
 
         String keyword = promptNonEmpty("  Enter name to search: ").toLowerCase();
-        boolean found = false;
 
-        System.out.printf("  %-4s %-18s %8s %8s %12s %12s %12s%n",
-            "No.", "Name", "Rate", "Hours", "Basic Pay", "OT Pay", "Net Pay");
-        printDivider(82);
+        boolean found = false;
 
         for (int i = 0; i < count; i++) {
             if (names[i].toLowerCase().contains(keyword)) {
-                System.out.printf("  %-4d %-18s %8.2f %8.2f %12.2f %12.2f %12.2f%n",
-                    (i + 1), names[i], hourlyRates[i], hoursWorked[i],
-                    basicPay[i], overtimePay[i], netPay[i]);
+                System.out.println("  No.        : " + (i + 1));
+                System.out.println("  Name       : " + names[i]);
+                System.out.println("  Rate       : " + hourlyRates[i]);
+                System.out.println("  Hours      : " + hoursWorked[i]);
+                System.out.println("  Basic Pay  : " + basicPay[i]);
+                System.out.println("  OT Pay     : " + overtimePay[i]);
+                System.out.println("  Net Pay    : " + netPay[i]);
+                System.out.println();
                 found = true;
             }
         }
@@ -289,7 +287,6 @@ public class SalarySystem {
 
         String deletedName = names[index];
 
-        // Shift all records left to fill the gap
         for (int i = index; i < count - 1; i++) {
             names[i]       = names[i + 1];
             hourlyRates[i] = hourlyRates[i + 1];
@@ -301,9 +298,8 @@ public class SalarySystem {
 
         count--;
         System.out.printf("%n  [✓] Employee \"%s\" deleted.%n", deletedName);
-        saveData(); // auto-save after deletion
+        saveData();
     }
-
 
     static double[] computePay(double rate, double hours) {
         double basic = 0, overtime = 0;
